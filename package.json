@@ -1,0 +1,28 @@
+{
+  "name": "amwares-web-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "seeds": "node_modules/.bin/sequelize db:seed:all"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blueimp-md5": "^2.10.0",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-json": "^2.0.2",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^7.2.1",
+    "koa-session2": "^2.2.5",
+    "koa-static": "^4.0.1",
+    "mysql": "^2.15.0",
+    "mysql2": "^1.4.2",
+    "sequelize": "^3.x",
+    "sequelize-cli": "^3.0.0"
+  }
+}
