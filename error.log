@@ -1,0 +1,12 @@
+2017-11-06T03:52:38.057Z error: use method:POST localhost:3000/slideShow/add error:An error
+2017-11-06T03:53:54.925Z error: use method:POST localhost:3000/slideShow/add error:An error
+2017-11-06T06:41:53.278Z error: use method:POST localhost:3000/slideShow/add error:SequelizeValidationError: notNull Violation: sort cannot be null
+2017-11-06T06:41:56.292Z error: use method:POST localhost:3000/slideShow/add error:SequelizeValidationError: notNull Violation: sort cannot be null
+2017-11-06T06:41:59.060Z error: use method:POST localhost:3000/slideShow/add error:SequelizeValidationError: notNull Violation: sort cannot be null
+2017-11-06T06:43:00.639Z error: use method:POST localhost:3000/slideShow/add error:SequelizeDatabaseError: ER_BAD_FIELD_ERROR: Unknown column 'NaN' in 'field list'
+2017-11-06T06:43:21.361Z error: use method:POST localhost:3000/slideShow/add error:SequelizeDatabaseError: ER_BAD_FIELD_ERROR: Unknown column 'NaN' in 'field list'
+2017-11-06T07:13:53.508Z error: use method:POST localhost:3000/slideShow/change error:TypeError: Cannot read property 'length' of undefined
+2017-11-06T07:14:35.952Z error: use method:POST localhost:3000/slideShow/change error:TypeError: Cannot read property 'length' of undefined
+2017-11-06T07:32:48.977Z error: use method:POST localhost:3000/slideShow/del/4 error:ReferenceError: fs is not defined
+2017-11-06T07:36:12.616Z error: use method:POST localhost:3000/slideShow/del/5 error:TypeError: Cannot read property 'slideshowUrl' of null
+2017-11-06T07:38:31.425Z error: use method:POST localhost:3000/slideShow/del/6 error:TypeError: Cannot read property 'slideshowUrl' of null

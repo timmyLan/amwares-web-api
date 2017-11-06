@@ -67,8 +67,8 @@ module.exports = (db) => {
             data: '添加用户成功'
         }
     });
-    router.post('/del', async(ctx) => {
-        const { id } = ctx.request.body;
+    router.post('/del/:id', async(ctx) => {
+        const id = ctx.params.id;
         let user = await db.User.findById(id);
         if (user.username === ctx.session.user) {
             return ctx.body = {
@@ -82,8 +82,9 @@ module.exports = (db) => {
             data: '删除用户成功'
         }
     });
-    router.post('/edit', async(ctx) => {
-        const { id, password } = ctx.request.body;
+    router.post('/edit/:id', async(ctx) => {
+        const id = ctx.params.id;
+        const { password } = ctx.request.body;
         let changePs = changePassword(password);
         let user = await db.User.update({
             password: changePs
