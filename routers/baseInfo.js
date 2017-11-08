@@ -1,17 +1,23 @@
 const router = require('koa-router')();
 const path = require('path');
+const fs = require('fs');
 const multer = require('koa-multer');
 const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const loggerError = require('./common.js').loggerError;
 module.exports = (db) => {
     router.get('/', async(ctx) => {
-        let result = await db.BaseInfo.findAll({
-            raw: true
-        });
-        return ctx.body = {
-            status: 200,
-            data: result
+        try {
+            let result = await db.BaseInfo.findAll({
+                raw: true
+            });
+            return ctx.body = {
+                status: 200,
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
         }
     });
 
@@ -21,13 +27,21 @@ module.exports = (db) => {
         try {
             let body = ctx.req.body;
             if (ctx.req.files) {
-                let fileInfo = await fileOperation(ctx.req.files);
+                let fileInfo = await fileOperation(ctx.req.files, 'baseInfo');
+                let baseInfo = await db.BaseInfo.findById(id);
+                let logUrl = baseInfo.logUrl;
+                let tmp_path = path.join(__dirname, `../assets${logUrl}`);
                 await db.BaseInfo.update({
                     ...body,
                     logUrl: fileInfo.logUrl
                 }, {
                     where: {
                         id: 1
+                    }
+                });
+                await fs.unlink(tmp_path, (err) => {
+                    if (err) {
+                        throw `error with unlink imageFile:${err}`;
                     }
                 });
                 return ctx.body = {

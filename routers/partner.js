@@ -2,12 +2,17 @@ const router = require('koa-router')();
 const loggerError = require('./common.js').loggerError;
 module.exports = (db) => {
     router.get('/', async(ctx) => {
-        let result = await db.Partner.findAll({
-            raw: true
-        });
-        return ctx.body = {
-            status: 200,
-            data: result
+        try {
+            let result = await db.Partner.findAll({
+                raw: true
+            });
+            return ctx.body = {
+                status: 200,
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
     router.post('/add', async(ctx) => {

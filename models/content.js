@@ -2,8 +2,12 @@
 module.exports = (sequelize, DataTypes) => {
     var Content = sequelize.define('Content', {
         title: DataTypes.STRING,
-        url: DataTypes.STRING,
-        description: DataTypes.STRING
+        contentUrl: DataTypes.STRING,
+        description: DataTypes.STRING,
+        sort: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        }
     }, {
         classMethods: {
             associate: function(models) {

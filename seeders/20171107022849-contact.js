@@ -12,10 +12,11 @@ module.exports = {
             isBetaMember: false
           }], {});
         */
-        return queryInterface.bulkInsert('Users', [{
-            username: 'admin',
-            password: '9d50b0ccb82cb896ad9047f8ae008580',
-            avatarUrl: '/images/user/pic01.jpg'
+        return queryInterface.bulkInsert('Contacts', [{
+            address:'广州市天河区天河东路242号601室',
+            tel: '+86 020 87519370',
+            fax: '+86 020 85262282',
+            email: 'info@amwares.com',
             createdAt: new Date(),
             updatedAt: new Date()
         }], {});
@@ -29,6 +30,6 @@ module.exports = {
           Example:
           return queryInterface.bulkDelete('Person', null, {});
         */
-        return queryInterface.bulkDelete('Users', null, {});
+        return queryInterface.bulkDelete('Contacts', null, {});
     }
 };

@@ -5,14 +5,19 @@ const multer = require('koa-multer');
 const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const loggerError = require('./common.js').loggerError;
+const definePaging = require('./common.js').definePaging;
 module.exports = (db) => {
-    router.get('/', async(ctx) => {
+    router.get('/:ClassifyId/:currentPage', async(ctx) => {
+        let ClassifyId = ctx.params.ClassifyId;
+        let currentPage = ctx.params.currentPage;
+        let paging = definePaging(currentPage);
         try {
-            let result = await db.SlideShow.findAll({
-                order: [
-                    ['sort', 'ASC'],
-                ],
-                raw: true
+            let result = await db.Product.findAndCountAll({
+                raw: true,
+                where: {
+                    ClassifyId: ClassifyId
+                },
+                ...paging
             });
             return ctx.body = {
                 status: 200,
@@ -23,37 +28,41 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.post('/add', upload.fields([
-        { name: 'slideshowUrl', maxCount: 1 }
+    router.post('/add/:ClassifyId', upload.fields([
+        { name: 'productUrl', maxCount: 1 }
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
-            let max = await db.SlideShow.max('sort');
-            let sort;
-            if (!max) {
-                sort = 1;
-            } else {
-                sort = ++max;
+            let ClassifyId = ctx.params.ClassifyId;
+            let classify = await db.Classify.findById(ClassifyId);
+            if (!classify) {
+                return ctx.body = {
+                    status: 400,
+                    data: '没有所属分类,请先创建分类'
+                }
             }
-            body = { ...body, sort: sort };
             let files = ctx.req.files;
+            body = {
+                ...body,
+                ClassifyId: ClassifyId
+            }
             if (files) {
-                let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
-                await db.SlideShow.create({
+                let fileInfo = await fileOperation(ctx.req.files, 'product');
+                await db.Product.create({
                     ...body,
-                    slideshowUrl: fileInfo.slideshowUrl
+                    productUrl: fileInfo.productUrl
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '添加轮播图成功'
+                    data: '添加产品成功'
                 }
             } else {
-                await db.SlideShow.create(body, {
-                    fields: ['title', 'description', 'link', 'sort']
+                await db.Product.create(body, {
+                    fields: ['name']
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '添加轮播图成功'
+                    data: '添加产品成功'
                 }
             }
         } catch (err) {
@@ -62,33 +71,33 @@ module.exports = (db) => {
         }
     });
     router.post('/edit/:id', upload.fields([
-        { name: 'slideshowUrl', maxCount: 1 }
+        { name: 'productUrl', maxCount: 1 }
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
             let id = ctx.params.id;
             let files = ctx.req.files;
             if (files) {
-                let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
-                let slideShow = await db.SlideShow.findById(id);
-                let slideshowUrl = slideShow.slideshowUrl;
-                await db.SlideShow.update({
+                let fileInfo = await fileOperation(ctx.req.files, 'product');
+                let product = await db.Product.findById(id);
+                let productUrl = product.productUrl;
+                await db.Product.update({
                     ...body,
-                    slideshowUrl: fileInfo.slideshowUrl
+                    productUrl: fileInfo.productUrl
                 }, {
                     where: {
                         id: id
                     }
                 });
-                if (slideshowUrl) {
-                    let target = await db.SlideShow.findAndCountAll({
+                if (productUrl) {
+                    let target = await db.Product.findAndCountAll({
                         where: {
-                            slideshowUrl: slideshowUrl
+                            productUrl: productUrl
                         },
                         raw: true
                     });
                     if (target.count < 1) {
-                        let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
+                        let tmp_path = path.join(__dirname, `../assets${productUrl}`);
                         await fs.unlink(tmp_path, (err) => {
                             if (err) {
                                 throw `error with unlink imageFile:${err}`;
@@ -98,18 +107,18 @@ module.exports = (db) => {
                 }
                 return ctx.body = {
                     status: 200,
-                    data: '修改轮播图成功'
+                    data: '修改产品成功'
                 }
             } else {
-                await db.SlideShow.update(body, {
-                    fields: ['title', 'description', 'link'],
+                await db.Product.update(body, {
+                    fields: ['name'],
                     where: {
                         id: id
                     }
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '修改轮播图成功'
+                    data: '修改产品成功'
                 }
             }
 
@@ -122,50 +131,26 @@ module.exports = (db) => {
     router.post('/del/:id', async(ctx) => {
         try {
             const id = ctx.params.id;
-            let slideShow = await db.SlideShow.findById(id);
-            let slideshowUrl = slideShow.slideshowUrl;
-            let target = await db.SlideShow.findAndCountAll({
+            let product = await db.Product.findById(id);
+            let productUrl = product.productUrl;
+            let target = await db.Product.findAndCountAll({
                 where: {
-                    slideshowUrl: slideshowUrl
+                    productUrl: productUrl
                 },
                 raw: true
             });
             if (target.count <= 1) {
-                let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
+                let tmp_path = path.join(__dirname, `../assets${productUrl}`);
                 await fs.unlink(tmp_path, (err) => {
                     if (err) {
                         throw `error with unlink imageFile:${err}`;
                     }
                 });
             }
-            await slideShow.destroy();
+            await product.destroy();
             return ctx.body = {
                 status: 200,
-                data: `删除轮播图成功`
-            }
-        } catch (err) {
-            const { method, header, url } = ctx;
-            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
-        }
-    });
-    router.post('/change', async(ctx) => {
-        try {
-            const { change } = ctx.request.body;
-            if (!change || !Array.isArray(change)) {
-                return ctx.body = {
-                    status: 400,
-                    data: `顺序交换参数必须为数组`
-                }
-            }
-            let sort = 1;
-            for (id of change) {
-                let target = await db.SlideShow.findById(id);
-                await target.update({ sort: sort });
-                sort++;
-            }
-            return ctx.body = {
-                status: 200,
-                body: '顺序交换成功'
+                data: `删除产品成功`
             }
         } catch (err) {
             const { method, header, url } = ctx;

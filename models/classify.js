@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     var Classify = sequelize.define('Classify', {
         name: DataTypes.STRING,
-        url: DataTypes.STRING,
+        classifyUrl: DataTypes.STRING,
         description: DataTypes.STRING
     }, {
         classMethods: {

@@ -5,14 +5,22 @@ const multer = require('koa-multer');
 const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const loggerError = require('./common.js').loggerError;
+const definePaging = require('./common.js').definePaging;
 module.exports = (db) => {
-    router.get('/', async(ctx) => {
+    router.get('/:ProductId/:currentPage', async(ctx) => {
+        let ProductId = ctx.params.ProductId;
+        let currentPage = ctx.params.currentPage;
+        let paging = definePaging(currentPage);
         try {
-            let result = await db.SlideShow.findAll({
+            let result = await db.Content.findAndCountAll({
+                raw: true,
+                where: {
+                    ProductId: ProductId
+                },
                 order: [
                     ['sort', 'ASC'],
                 ],
-                raw: true
+                ...paging
             });
             return ctx.body = {
                 status: 200,
@@ -23,37 +31,49 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.post('/add', upload.fields([
-        { name: 'slideshowUrl', maxCount: 1 }
+    router.post('/add/:ProductId', upload.fields([
+        { name: 'contentUrl', maxCount: 1 }
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
-            let max = await db.SlideShow.max('sort');
+            let ProductId = ctx.params.ProductId;
+            let product = await db.Product.findById(ProductId);
+            if (!product) {
+                return ctx.body = {
+                    status: 400,
+                    data: '没有所属产品,请先创建产品'
+                }
+            }
+            let max = await db.Content.max('sort');
             let sort;
             if (!max) {
                 sort = 1;
             } else {
                 sort = ++max;
             }
-            body = { ...body, sort: sort };
+            body = {
+                ...body,
+                ProductId: ProductId,
+                sort: sort
+            }
             let files = ctx.req.files;
             if (files) {
-                let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
-                await db.SlideShow.create({
+                let fileInfo = await fileOperation(ctx.req.files, 'content');
+                await db.Content.create({
                     ...body,
-                    slideshowUrl: fileInfo.slideshowUrl
+                    contentUrl: fileInfo.contentUrl
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '添加轮播图成功'
+                    data: '添加产品成功'
                 }
             } else {
-                await db.SlideShow.create(body, {
-                    fields: ['title', 'description', 'link', 'sort']
+                await db.Content.create(body, {
+                    fields: ['title', 'description']
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '添加轮播图成功'
+                    data: '添加内容块成功'
                 }
             }
         } catch (err) {
@@ -62,33 +82,33 @@ module.exports = (db) => {
         }
     });
     router.post('/edit/:id', upload.fields([
-        { name: 'slideshowUrl', maxCount: 1 }
+        { name: 'contentUrl', maxCount: 1 }
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
             let id = ctx.params.id;
             let files = ctx.req.files;
             if (files) {
-                let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
-                let slideShow = await db.SlideShow.findById(id);
-                let slideshowUrl = slideShow.slideshowUrl;
-                await db.SlideShow.update({
+                let fileInfo = await fileOperation(ctx.req.files, 'content');
+                let content = await db.Content.findById(id);
+                let contentUrl = content.contentUrl;
+                await db.Content.update({
                     ...body,
-                    slideshowUrl: fileInfo.slideshowUrl
+                    contentUrl: fileInfo.contentUrl
                 }, {
                     where: {
                         id: id
                     }
                 });
-                if (slideshowUrl) {
-                    let target = await db.SlideShow.findAndCountAll({
+                if (contentUrl) {
+                    let target = await db.Content.findAndCountAll({
                         where: {
-                            slideshowUrl: slideshowUrl
+                            contentUrl: contentUrl
                         },
                         raw: true
                     });
                     if (target.count < 1) {
-                        let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
+                        let tmp_path = path.join(__dirname, `../assets${contentUrl}`);
                         await fs.unlink(tmp_path, (err) => {
                             if (err) {
                                 throw `error with unlink imageFile:${err}`;
@@ -98,21 +118,20 @@ module.exports = (db) => {
                 }
                 return ctx.body = {
                     status: 200,
-                    data: '修改轮播图成功'
+                    data: '修改内容块成功'
                 }
             } else {
-                await db.SlideShow.update(body, {
-                    fields: ['title', 'description', 'link'],
+                await db.Product.update(body, {
+                    fields: ['title', 'description'],
                     where: {
                         id: id
                     }
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '修改轮播图成功'
+                    data: '修改内容块成功'
                 }
             }
-
         } catch (err) {
             const { method, header, url } = ctx;
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
@@ -122,26 +141,26 @@ module.exports = (db) => {
     router.post('/del/:id', async(ctx) => {
         try {
             const id = ctx.params.id;
-            let slideShow = await db.SlideShow.findById(id);
-            let slideshowUrl = slideShow.slideshowUrl;
-            let target = await db.SlideShow.findAndCountAll({
+            let content = await db.Content.findById(id);
+            let contentUrl = content.contentUrl;
+            let target = await db.Content.findAndCountAll({
                 where: {
-                    slideshowUrl: slideshowUrl
+                    contentUrl: contentUrl
                 },
                 raw: true
             });
             if (target.count <= 1) {
-                let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
+                let tmp_path = path.join(__dirname, `../assets${contentUrl}`);
                 await fs.unlink(tmp_path, (err) => {
                     if (err) {
                         throw `error with unlink imageFile:${err}`;
                     }
                 });
             }
-            await slideShow.destroy();
+            await content.destroy();
             return ctx.body = {
                 status: 200,
-                data: `删除轮播图成功`
+                data: `删除产品成功`
             }
         } catch (err) {
             const { method, header, url } = ctx;
@@ -154,12 +173,12 @@ module.exports = (db) => {
             if (!change || !Array.isArray(change)) {
                 return ctx.body = {
                     status: 400,
-                    data: `顺序交换参数必须为数组`
+                    data: `顺序交换换参数必须为数组`
                 }
             }
             let sort = 1;
             for (id of change) {
-                let target = await db.SlideShow.findById(id);
+                let target = await db.Content.findById(id);
                 await target.update({ sort: sort });
                 sort++;
             }
