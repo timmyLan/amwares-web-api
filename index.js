@@ -27,6 +27,6 @@ db.sequelize.sync(
     console.log('success to connect mysql~');
 });
 
-app.listen(3000,()=>{
+app.listen(3010,()=>{
   console.log('app listening at 3000');
 });
