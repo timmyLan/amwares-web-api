@@ -17,7 +17,7 @@ app.use(session({
 }));
 app.use(bodyParser());
 app.use(json());
-// app.use(login_mid());
+app.use(login_mid());
 app.use(router.routes());
 db.sequelize.sync(
     // {
