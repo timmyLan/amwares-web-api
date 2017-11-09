@@ -22,28 +22,30 @@ module.exports = (db) => {
     });
 
     router.post('/edit', upload.fields([
-        { name: 'logUrl', maxCount: 1 }
+        { name: 'logoUrl', maxCount: 1 }
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
             if (ctx.req.files) {
                 let fileInfo = await fileOperation(ctx.req.files, 'baseInfo');
-                let baseInfo = await db.BaseInfo.findById(id);
-                let logUrl = baseInfo.logUrl;
-                let tmp_path = path.join(__dirname, `../assets${logUrl}`);
+                let baseInfo = await db.BaseInfo.findById(1);
+                let logoUrl = baseInfo.logoUrl;
                 await db.BaseInfo.update({
                     ...body,
-                    logUrl: fileInfo.logUrl
+                    logoUrl: fileInfo.logoUrl
                 }, {
                     where: {
                         id: 1
                     }
                 });
-                await fs.unlink(tmp_path, (err) => {
-                    if (err) {
-                        throw `error with unlink imageFile:${err}`;
-                    }
-                });
+                if (logoUrl) {
+                    let tmp_path = path.join(__dirname, `../assets${logoUrl}`);
+                    await fs.unlink(tmp_path, (err) => {
+                        if (err) {
+                            throw `error with unlink imageFile:${err}`;
+                        }
+                    });
+                }
                 return ctx.body = {
                     status: 200,
                     data: '修改网站基本信息成功'

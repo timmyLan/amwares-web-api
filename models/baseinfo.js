@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var BaseInfo = sequelize.define('BaseInfo', {
-    logUrl: DataTypes.STRING,
+    logoUrl: DataTypes.STRING,
     name: DataTypes.STRING,
     description: DataTypes.STRING,
     copyright: DataTypes.STRING

@@ -65,7 +65,7 @@ module.exports = (db) => {
                 });
                 return ctx.body = {
                     status: 200,
-                    data: '添加产品成功'
+                    data: '添加内容块成功'
                 }
             } else {
                 await db.Content.create(body, {
@@ -160,7 +160,7 @@ module.exports = (db) => {
             await content.destroy();
             return ctx.body = {
                 status: 200,
-                data: `删除产品成功`
+                data: `删除内容块成功`
             }
         } catch (err) {
             const { method, header, url } = ctx;

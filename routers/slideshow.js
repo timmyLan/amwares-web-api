@@ -124,19 +124,22 @@ module.exports = (db) => {
             const id = ctx.params.id;
             let slideShow = await db.SlideShow.findById(id);
             let slideshowUrl = slideShow.slideshowUrl;
-            let target = await db.SlideShow.findAndCountAll({
-                where: {
-                    slideshowUrl: slideshowUrl
-                },
-                raw: true
-            });
-            if (target.count <= 1) {
-                let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
-                await fs.unlink(tmp_path, (err) => {
-                    if (err) {
-                        throw `error with unlink imageFile:${err}`;
-                    }
+            if (slideshowUrl) {
+                let target = await db.SlideShow.findAndCountAll({
+                    where: {
+                        slideshowUrl: slideshowUrl
+                    },
+                    raw: true
                 });
+                if (target.count <= 1) {
+                    let tmp_path = path.join(__dirname, `../assets${slideshowUrl}`);
+                    await fs.unlink(tmp_path, (err) => {
+                        if (err) {
+                            throw `error with unlink imageFile:${err}`;
+                        }
+                    });
+                }
+
             }
             await slideShow.destroy();
             return ctx.body = {

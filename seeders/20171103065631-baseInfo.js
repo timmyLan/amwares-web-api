@@ -16,7 +16,7 @@ module.exports = {
             name: '广州辂轺信息科技有限公司',
             description: '广州辂轺信息科技2013年成立于广州,是一家专注于汽车ECU（电子控制单元）产品开发的科技企业。 依托于自行开发的AUTOSAR汽车软件架构和OSEK实时操作系统，凭借自身多年的技术积累，为广大客户提供各种ECU解决方案和产品。',
             copyright: '© 2014-2017 广州辂轺信息科技有限公司 版权所有',
-            logUrl: '/images/baseInfo/pic01.jpg',
+            logoUrl: '/images/baseInfo/pic01.jpg',
             createdAt: new Date(),
             updatedAt: new Date()
         }], {});

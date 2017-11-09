@@ -36,7 +36,7 @@ module.exports = (db) => {
             if (floor > cap) {
                 return ctx.body = {
                     status: 400,
-                    data: '时间上限不得超过时间下限'
+                    data: '开始时间不得超过结束时间'
                 }
             }
             let result = await db.Visitor.findAll({
