@@ -9,10 +9,10 @@
     #添加数据库
     mysql
     CREATE DATABASE amwares_web_development;
-    #填充数据
-    npm run seeds
     #运行程序
     npm start
+    #填充数据
+    npm run seeds
 ```
 
 ## 目录
