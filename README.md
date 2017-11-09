@@ -8,7 +8,7 @@
     npm i
     #添加数据库
     mysql
-    CREATE DATABASE amwares_web_development;
+    CREATE DATABASE amwares_web_development CHARACTER SET='utf8';
     #运行程序
     npm start
     #填充数据
