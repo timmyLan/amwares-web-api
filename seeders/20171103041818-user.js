@@ -14,8 +14,9 @@ module.exports = {
         */
         return queryInterface.bulkInsert('Users', [{
             username: 'admin',
-            password: '9d50b0ccb82cb896ad9047f8ae008580',
-            avatarUrl: '/images/user/pic01.jpg'
+            //admin123
+            password: 'afb160850e4ae3b608de0098ca95109c',
+            avatarUrl: '/images/avatar/avatar.png',
             createdAt: new Date(),
             updatedAt: new Date()
         }], {});

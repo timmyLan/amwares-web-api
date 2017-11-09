@@ -5,6 +5,7 @@ const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const changePassword = require('./common.js').changePassword;
 const router = require('koa-router')();
+const defaultAvatarUrl = '/images/avatar/avatar.png';
 module.exports = (db) => {
     router.post('/login', async(ctx) => {
         try {
@@ -76,7 +77,8 @@ module.exports = (db) => {
             }
             let result = await db.User.create({
                 username: username,
-                password: changePs
+                password: changePs,
+                avatarUrl: defaultAvatarUrl
             });
             return ctx.body = {
                 status: 200,
@@ -99,19 +101,21 @@ module.exports = (db) => {
                 }
             }
             let avatarUrl = user.avatarUrl;
-            let target = await db.User.findAndCountAll({
-                where: {
-                    avatarUrl: avatarUrl
-                },
-                raw: true
-            });
-            if (target.count <= 1) {
-                let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
-                await fs.unlink(tmp_path, (err) => {
-                    if (err) {
-                        throw `error with unlink imageFile:${err}`;
-                    }
+            if (avatarUrl != defaultAvatarUrl) {
+                let target = await db.User.findAndCountAll({
+                    where: {
+                        avatarUrl: avatarUrl
+                    },
+                    raw: true
                 });
+                if (target.count <= 1) {
+                    let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
+                    await fs.unlink(tmp_path, (err) => {
+                        if (err) {
+                            throw `error with unlink imageFile:${err}`;
+                        }
+                    });
+                }
             }
             await user.destroy();
             return ctx.body = {
@@ -163,24 +167,26 @@ module.exports = (db) => {
                     }
                 });
                 if (avatarUrl) {
-                    let target = await db.User.findAndCountAll({
-                        where: {
-                            avatarUrl: avatarUrl
-                        },
-                        raw: true
-                    });
-                    if (target.count < 1) {
-                        let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
-                        await fs.unlink(tmp_path, (err) => {
-                            if (err) {
-                                throw `error with unlink imageFile:${err}`;
-                            }
+                    if (avatarUrl != defaultAvatarUrl) {
+                        let target = await db.User.findAndCountAll({
+                            where: {
+                                avatarUrl: avatarUrl
+                            },
+                            raw: true
                         });
+                        if (target.count < 1) {
+                            let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
+                            await fs.unlink(tmp_path, (err) => {
+                                if (err) {
+                                    throw `error with unlink imageFile:${err}`;
+                                }
+                            });
+                        }
                     }
                 }
                 return ctx.body = {
                     status: 200,
-                    data: '添加产品分类成功'
+                    data: '修改头像成功'
                 }
             } else {
                 return ctx.body = {
