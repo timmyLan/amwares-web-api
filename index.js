@@ -28,5 +28,5 @@ db.sequelize.sync(
 });
 
 app.listen(3010,()=>{
-  console.log('app listening at 3000');
+  console.log('app listening at 3010');
 });
