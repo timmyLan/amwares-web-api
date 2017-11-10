@@ -28,7 +28,11 @@ module.exports = (db) => {
             let body = ctx.req.body;
             if (ctx.req.files) {
                 let fileInfo = await fileOperation(ctx.req.files, 'baseInfo');
-                let baseInfo = await db.BaseInfo.findById(1);
+                let baseInfo = await db.BaseInfo.findOne({
+                    where:{
+                        id：1
+                    }
+                });
                 let logoUrl = baseInfo.logoUrl;
                 await db.BaseInfo.update({
                     ...body,
