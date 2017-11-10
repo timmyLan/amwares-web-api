@@ -41,6 +41,14 @@ db.sequelize.sync(
     console.log('success to connect mysql~');
 });
 
-app.listen(3010,()=>{
-  console.log('app listening at 3010');
-});
+if(ENV==='development'){
+    app.listen(3010,()=>{
+        console.log('app listening at 3010');
+    });
+}else if(ENV==='production'){
+    app.listen(3011,()=>{
+        console.log('app listening at 3011');
+    });
+}else{
+    console.log('error env.');
+}
