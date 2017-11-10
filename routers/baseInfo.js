@@ -46,7 +46,7 @@ module.exports = (db) => {
                 if (logoUrl) {
                     let tmp_path = path.join(__dirname, `../assets${logoUrl}`);
                     if(tmp_path != defaultUrl){
-                        if(fs.existssync(tmp_path)){
+                        if(fs.existsSync(tmp_path)){
                             await fs.unlink(tmp_path, (err) => {
                             if (err) {
                                 throw `error with unlink imageFile:${err}`;
