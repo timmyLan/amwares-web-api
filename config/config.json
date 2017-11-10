@@ -17,7 +17,7 @@
     "username": "root",
     "password": null,
     "database": "amwares_web_production",
-    "host": "192.168.1.150",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   }
 }

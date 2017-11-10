@@ -12,7 +12,7 @@
     #运行程序
     npm start
     #填充数据
-    npm run seeds
+    npm run development-seeds
 ```
 
 ## 目录

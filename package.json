@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development node index.js",
     "production": "cross-env NODE_ENV=production node index.js",
-    "seeds": "node_modules/.bin/sequelize db:seed:all"
+    "production-seeds": "cross-env NODE_ENV=production node_modules/.bin/sequelize db:seed:all",
+    "development-seeds": "cross-env NODE_ENV=development node_modules/.bin/sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",
