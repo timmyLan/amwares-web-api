@@ -10,12 +10,20 @@ const router = require('./routers');
 const login_mid = require('./mids/login_mid.js');
 // 初始化应用服务
 const app = new Koa();
+const ENV = process.env.NODE_ENV;
 //middleware
 app.use(logger());
 app.use(cors({
     origin: function (ctx) {
-        return "*"
-    }
+    	if(ENV==='development'){
+    		return 'http://localhost:3002';
+    	}else if(ENV==='production'){
+    		return 'ly.admin.com';
+    	}else{
+    		return false;
+    	}
+    },
+    credentials:true
 }));
 app.use(require('koa-static')(__dirname + '/assets'));
 app.use(session({
