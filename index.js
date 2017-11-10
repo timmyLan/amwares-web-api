@@ -1,6 +1,6 @@
 const db = require('./models');
 const Koa = require('koa');
-const cors = require('koa-cors');
+const cors = require('koa2-cors');
 const json = require('koa-json');
 const logger = require('koa-logger');
 // 认证相关
