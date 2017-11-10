@@ -30,7 +30,7 @@ module.exports = (db) => {
                 let fileInfo = await fileOperation(ctx.req.files, 'baseInfo');
                 let baseInfo = await db.BaseInfo.findOne({
                     where:{
-                        id：1
+                        id:1
                     }
                 });
                 let logoUrl = baseInfo.logoUrl;
