@@ -2,4 +2,4 @@ node_modules
 *.log
 assets/images/*
 !assets/images/avatar
-!assets/images/baseInfo
+!assets/images/baseInfo/pic01.jpg
