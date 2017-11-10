@@ -12,7 +12,11 @@ const login_mid = require('./mids/login_mid.js');
 const app = new Koa();
 //middleware
 app.use(logger());
-app.use(cors());
+app.use(cors({
+    origin: function (ctx) {
+        return "*"
+    }
+}));
 app.use(require('koa-static')(__dirname + '/assets'));
 app.use(session({
     key: "mypassword",
