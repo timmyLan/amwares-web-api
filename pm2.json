@@ -1,9 +1,0 @@
-{
-	"apps":[
-		{
-			"name":"amwares-api-production",
-			"script":"npm",
-			"args" : "production"
-		}
-	]
-}
