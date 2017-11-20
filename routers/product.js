@@ -6,6 +6,7 @@ const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const loggerError = require('./common.js').loggerError;
 const definePaging = require('./common.js').definePaging;
+const removeFile = require('./common.js').removeFile;
 module.exports = (db) => {
     router.get('/:ClassifyId/:currentPage', async(ctx) => {
         let ClassifyId = ctx.params.ClassifyId;
@@ -98,11 +99,7 @@ module.exports = (db) => {
                     });
                     if (target.count < 1) {
                         let tmp_path = path.join(__dirname, `../assets${productUrl}`);
-                        await fs.unlink(tmp_path, (err) => {
-                            if (err) {
-                                throw `error with unlink imageFile:${err}`;
-                            }
-                        });
+                        await removeFile(tmp_path);
                     }
                 }
                 return ctx.body = {
@@ -141,11 +138,7 @@ module.exports = (db) => {
             });
             if (target.count <= 1) {
                 let tmp_path = path.join(__dirname, `../assets${productUrl}`);
-                await fs.unlink(tmp_path, (err) => {
-                    if (err) {
-                        throw `error with unlink imageFile:${err}`;
-                    }
-                });
+                await removeFile(tmp_path);
             }
             await product.destroy();
             return ctx.body = {

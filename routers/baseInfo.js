@@ -5,6 +5,7 @@ const multer = require('koa-multer');
 const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const loggerError = require('./common.js').loggerError;
+const removeFile = require('./common.js').removeFile;
 const defaultUrl = path.join(__dirname, `../assets/images/baseInfo/pic01.jpg`);
 module.exports = (db) => {
     router.get('/', async(ctx) => {
@@ -46,13 +47,7 @@ module.exports = (db) => {
                 if (logoUrl) {
                     let tmp_path = path.join(__dirname, `../assets${logoUrl}`);
                     if(tmp_path != defaultUrl){
-                        if(fs.existsSync(tmp_path)){
-                            await fs.unlink(tmp_path, (err) => {
-                            if (err) {
-                                throw `error with unlink imageFile:${err}`;
-                            }
-                            });
-                        }
+                        await removeFile(tmp_path);
                     }
                 }
                 return ctx.body = {

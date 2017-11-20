@@ -4,6 +4,7 @@ const multer = require('koa-multer');
 const upload = multer({ dest: path.join(__dirname, '../assets/images') });
 const fileOperation = require('./common.js').fileOperation;
 const changePassword = require('./common.js').changePassword;
+const removeFile = require('./common.js').removeFile;
 const router = require('koa-router')();
 const defaultAvatarUrl = '/images/avatar/avatar.png';
 module.exports = (db) => {
@@ -110,11 +111,7 @@ module.exports = (db) => {
                 });
                 if (target.count <= 1) {
                     let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
-                    await fs.unlink(tmp_path, (err) => {
-                        if (err) {
-                            throw `error with unlink imageFile:${err}`;
-                        }
-                    });
+                    await removeFile(tmp_path);
                 }
             }
             await user.destroy();
@@ -176,11 +173,7 @@ module.exports = (db) => {
                         });
                         if (target.count < 1) {
                             let tmp_path = path.join(__dirname, `../assets${avatarUrl}`);
-                            await fs.unlink(tmp_path, (err) => {
-                                if (err) {
-                                    throw `error with unlink imageFile:${err}`;
-                                }
-                            });
+                            await removeFile(tmp_path);
                         }
                     }
                 }

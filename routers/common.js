@@ -69,9 +69,19 @@ const definePaging = (currentPage = 1, countPerPage = 10) => {
         'offset': countPerPage * (currentPage - 1) // 跳过多少条
     }
 }
+const removeFile = async (tmp_path) =>{
+    if(fs.existsSync(tmp_path)){
+        await fs.unlink(tmp_path, (err) => {
+        if (err) {
+            throw `error with unlink imageFile:${err}`;
+        }
+        });
+    }
+}
 module.exports = {
     changePassword: changePassword,
     fileOperation: fileOperation,
     loggerError: loggerError,
-    definePaging: definePaging
+    definePaging: definePaging,
+    removeFile:removeFile
 }
