@@ -27,7 +27,6 @@ const fileOperation = async(files, folder) => {
     try {
         let target_dir = path.join(__dirname, `../assets/images/${folder}`)
         let exist = fs.existsSync(target_dir);
-        console.log('exist', exist);
         if (!exist) {
             await fs.mkdir(target_dir, (err) => {
                 if (err) {

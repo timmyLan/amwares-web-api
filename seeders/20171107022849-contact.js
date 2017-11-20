@@ -17,6 +17,7 @@ module.exports = {
             tel: '+86 020 87519370',
             fax: '+86 020 85262282',
             email: 'info@amwares.com',
+            contactUrl: '/images/avatar/avatar.png',
             createdAt: new Date(),
             updatedAt: new Date()
         }], {});

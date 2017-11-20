@@ -28,27 +28,18 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.post('/edit', async(ctx) => {
+    router.post('/edit/:id', async(ctx) => {
         try {
-            const { advantageArr } = ctx.request.body;
-            if (!advantageArr || !Array.isArray(advantageArr)) {
-                return ctx.body = {
-                    status: 400,
-                    data: `修改我们的优势参数必须为数组`
+            const body = ctx.request.body;
+            const id = ctx.params.id;
+            await db.Advantage.update(body,{
+                where:{
+                    id:id
                 }
-            } else {
-                for (advantage of advantageArr) {
-                    let id = advantage.id;
-                    await db.Advantage.update(advantage, {
-                        where: {
-                            id: id
-                        }
-                    });
-                }
-                return ctx.body = {
-                    status: 200,
-                    data: '修改我们的优势成功'
-                }
+            })
+            return ctx.body = {
+                status: 200,
+                data: '修改我们的优势成功'
             }
         } catch (err) {
             const { method, header, url } = ctx;

@@ -28,27 +28,18 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.post('/edit', async(ctx) => {
+    router.post('/edit/:id', async(ctx) => {
         try {
-            const { linkArr } = ctx.request.body;
-            if (!linkArr || !Array.isArray(linkArr)) {
-                return ctx.body = {
-                    status: 400,
-                    data: `修改友情链接参数必须为数组`
+            const body = ctx.request.body;
+            const id = ctx.params.id;
+            await db.Link.update(body,{
+                where:{
+                    id:id
                 }
-            } else {
-                for (link of linkArr) {
-                    let id = link.id;
-                    await db.Link.update(link, {
-                        where: {
-                            id: id
-                        }
-                    });
-                }
-                return ctx.body = {
-                    status: 200,
-                    data: '修改友情链接成功'
-                }
+            })
+            return ctx.body = {
+                status: 200,
+                data: '修改友情链接成功'
             }
         } catch (err) {
             const { method, header, url } = ctx;
