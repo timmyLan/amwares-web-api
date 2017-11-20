@@ -25,6 +25,39 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
+    router.get('/getByName',async (ctx)=>{
+        let {name} = ctx.query;
+        try {
+            let result = await db.Classify.findOne({
+                raw: true,
+                where:{
+                    name:name
+                }
+            });
+            return ctx.body = {
+                status: 200,
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
+        }
+    });
+    router.get('/getById',async (ctx)=>{
+        let {id} = ctx.query;
+        try {
+            let result = await db.Classify.findById(id,{
+                raw: true
+            });
+            return ctx.body = {
+                status: 200,
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
+        }
+    });
     router.post('/add', upload.fields([
         { name: 'classifyUrl', maxCount: 1 }
     ]), async(ctx) => {
