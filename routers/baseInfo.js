@@ -55,7 +55,7 @@ module.exports = (db) => {
                     data: '修改网站基本信息成功'
                 }
             } else {
-                await db.BaseInfo.update({
+                await db.BaseInfo.update(body, {
                     where: {
                         id: 1
                     },
