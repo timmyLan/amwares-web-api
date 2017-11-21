@@ -31,7 +31,7 @@ module.exports = (db) => {
         try {
             let body = ctx.req.body;
             let files = ctx.req.files;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'introduction');
                 await db.Introduction.create({
                     ...body,
@@ -62,7 +62,7 @@ module.exports = (db) => {
             let body = ctx.req.body;
             let id = ctx.params.id;
             let files = ctx.req.files;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'introduction');
                 let introduction = await db.Introduction.findById(id);
                 let imageUrl = introduction.imageUrl;

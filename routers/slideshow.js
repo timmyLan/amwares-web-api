@@ -38,7 +38,7 @@ module.exports = (db) => {
             }
             body = { ...body, sort: sort };
             let files = ctx.req.files;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
                 await db.SlideShow.create({
                     ...body,
@@ -69,7 +69,7 @@ module.exports = (db) => {
             let body = ctx.req.body;
             let id = ctx.params.id;
             let files = ctx.req.files;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'slideShow');
                 let slideShow = await db.SlideShow.findById(id);
                 let slideshowUrl = slideShow.slideshowUrl;

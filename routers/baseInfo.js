@@ -28,11 +28,11 @@ module.exports = (db) => {
     ]), async(ctx) => {
         try {
             let body = ctx.req.body;
-            if (ctx.req.files) {
+            if (Object.keys(ctx.req.files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'baseInfo');
                 let baseInfo = await db.BaseInfo.findOne({
-                    where:{
-                        id:1
+                    where: {
+                        id: 1
                     }
                 });
                 let logoUrl = baseInfo.logoUrl;
@@ -46,7 +46,7 @@ module.exports = (db) => {
                 });
                 if (logoUrl) {
                     let tmp_path = path.join(__dirname, `../assets${logoUrl}`);
-                    if(tmp_path != defaultUrl){
+                    if (tmp_path != defaultUrl) {
                         await removeFile(tmp_path);
                     }
                 }

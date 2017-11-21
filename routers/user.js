@@ -152,7 +152,7 @@ module.exports = (db) => {
         try {
             let files = ctx.req.files;
             let id = ctx.params.id;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'user');
                 let user = await db.User.findById(id);
                 let avatarUrl = user.avatarUrl;

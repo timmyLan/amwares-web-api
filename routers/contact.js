@@ -27,7 +27,7 @@ module.exports = (db) => {
         try {
             let files = ctx.req.files;
             let body = ctx.req.body;
-            if (files) {
+            if (Object.keys(files).length !== 0) {
                 let fileInfo = await fileOperation(ctx.req.files, 'contact');
                 let contact = await db.Contact.findById(1);
                 let contactUrl = contact.contactUrl;
