@@ -97,7 +97,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (contentUrl) {
+                if (contentUrl&& contentUrl!==fileInfo.contentUrl) {
                     let target = await db.Content.findAndCountAll({
                         where: {
                             contentUrl: contentUrl

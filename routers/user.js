@@ -163,7 +163,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (avatarUrl) {
+                if (avatarUrl && avatarUrl !== fileInfo.avatarUrl) {
                     if (avatarUrl != defaultAvatarUrl) {
                         let target = await db.User.findAndCountAll({
                             where: {

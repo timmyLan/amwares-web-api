@@ -25,13 +25,13 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.get('/getByName',async (ctx)=>{
-        let {name} = ctx.query;
+    router.get('/getByName', async(ctx) => {
+        let { name } = ctx.query;
         try {
             let result = await db.Classify.findOne({
                 raw: true,
-                where:{
-                    name:name
+                where: {
+                    name: name
                 }
             });
             return ctx.body = {
@@ -43,10 +43,10 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.get('/getById',async (ctx)=>{
-        let {id} = ctx.query;
+    router.get('/getById', async(ctx) => {
+        let { id } = ctx.query;
         try {
-            let result = await db.Classify.findById(id,{
+            let result = await db.Classify.findById(id, {
                 raw: true
             });
             return ctx.body = {
@@ -107,7 +107,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (classifyUrl) {
+                if (classifyUrl && classifyUrl !== fileInfo.classifyUrl) {
                     let target = await db.Classify.findAndCountAll({
                         where: {
                             classifyUrl: classifyUrl

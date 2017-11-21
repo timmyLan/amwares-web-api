@@ -74,7 +74,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (imageUrl) {
+                if (imageUrl && imageUrl !== fileInfo.imageUrl) {
                     let target = await db.Introduction.findAndCountAll({
                         where: {
                             imageUrl: imageUrl

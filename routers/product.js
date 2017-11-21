@@ -30,7 +30,7 @@ module.exports = (db) => {
         }
     });
     router.get('/getByName', async(ctx) => {
-        let {name} = ctx.query;
+        let { name } = ctx.query;
         try {
             let result = await db.Product.findOne({
                 raw: true,
@@ -47,10 +47,10 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.get('/getById',async (ctx)=>{
-        let {id} = ctx.query;
+    router.get('/getById', async(ctx) => {
+        let { id } = ctx.query;
         try {
-            let result = await db.Product.findById(id,{
+            let result = await db.Product.findById(id, {
                 raw: true
             });
             return ctx.body = {
@@ -123,7 +123,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (productUrl) {
+                if (productUrl && productUrl !== fileInfo.productUrl) {
                     let target = await db.Product.findAndCountAll({
                         where: {
                             productUrl: productUrl

@@ -44,7 +44,7 @@ module.exports = (db) => {
                         id: 1
                     }
                 });
-                if (logoUrl) {
+                if (logoUrl && logoUrl !== fileInfo.logoUrl) {
                     let tmp_path = path.join(__dirname, `../assets${logoUrl}`);
                     if (tmp_path != defaultUrl) {
                         await removeFile(tmp_path);

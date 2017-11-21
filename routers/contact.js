@@ -40,7 +40,7 @@ module.exports = (db) => {
                         id: 1
                     }
                 });
-                if (contactUrl != defaultAvatarUrl) {
+                if (contactUrl != defaultAvatarUrl && contactUrl !== fileInfo.contactUrl) {
                     let tmp_path = path.join(__dirname, `../assets${contactUrl}`);
                     await removeFile(tmp_path);
                 }

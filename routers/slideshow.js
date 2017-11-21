@@ -81,7 +81,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (slideshowUrl) {
+                if (slideshowUrl && slideshowUrl !== fileInfo.slideshowUrl) {
                     let target = await db.SlideShow.findAndCountAll({
                         where: {
                             slideshowUrl: slideshowUrl
