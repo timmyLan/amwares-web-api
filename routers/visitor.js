@@ -1,39 +1,26 @@
 const router = require('koa-router')();
 const loggerError = require('./common.js').loggerError;
 const definePaging = require('./common.js').definePaging;
-
+const moment = require('moment');
 module.exports = (db) => {
-    router.get('/', async(ctx) => {
-        try {
-            let currentPage = ctx.params.currentPage;
-            let paging = definePaging(currentPage);
-            let result = await db.Visitor.findAndCountAll({
-                raw: true,
-                ...paging
-            });
-            return ctx.body = {
-                status: 200,
-                data: result
-            }
-        } catch (err) {
-            const { method, header, url } = ctx;
-            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
-        }
-    });
     router.post('/interval', async(ctx) => {
         try {
             let { cap, floor } = ctx.request.body;
             if (!cap) {
-                cap = new Date();
+                cap = moment();
+                capFormat = cap.format();
             } else {
-                cap = new Date(cap);
+                cap = moment(cap).add(1, 'days');
+                capFormat = cap.format();
             }
             if (!floor) {
-                floor = new Date(cap - 24 * 60 * 60 * 1000 * 365);
+                floor = moment(capFormat).subtract(1, 'years');
+                floorFormat = floor.format();
             } else {
-                floor = new Date(floor);
+                floor = moment(floor);
+                floorFormat = floor.format();
             }
-            if (floor > cap) {
+            if (floorFormat > capFormat) {
                 return ctx.body = {
                     status: 400,
                     data: '开始时间不得超过结束时间'
@@ -43,11 +30,12 @@ module.exports = (db) => {
                 raw: true,
                 where: {
                     createdAt: {
-                        '$between': [floor, cap]
+                        '$between': [floorFormat, capFormat]
                     }
                 }
             });
-            let sub = Math.ceil((cap - floor) / 1000 / 60 / 60 / 24);
+            let sub = Math.ceil(cap.diff(floor) / 1000 / 60 / 60 / 24);
+            console.log('sub', sub);
             let arr = [];
             arr.length = sub;
             arr.fill(0);
@@ -60,9 +48,7 @@ module.exports = (db) => {
             }
             return ctx.body = {
                 status: 200,
-                data: {
-                    arr: arr
-                }
+                data: arr
             }
         } catch (err) {
             const { method, header, url } = ctx;
@@ -151,15 +137,51 @@ module.exports = (db) => {
     router.get('/count/:ip', async(ctx) => {
         try {
             let ip = ctx.params.ip;
-            let result = await db.Visitor.findAndCountAll({
-                raw: true,
+            let result = await db.Visitor.count({
                 where: {
                     ip: ip
                 }
             });
             return ctx.body = {
                 status: 200,
-                data: result.count
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
+        }
+    });
+    router.get('/', async(ctx) => {
+        try {
+            let currentPage = ctx.params.currentPage;
+            let paging = definePaging(currentPage);
+            let result = await db.Visitor.findAndCountAll({
+                raw: true,
+                ...paging
+            });
+            let { rows } = result;
+            let obj = {};
+            let new_rows = [];
+            for (let val of rows) {
+                let index = Object.keys(obj).indexOf(val.ip);
+                if (index < 0) {
+                    let count = await db.Visitor.count({
+                        where: {
+                            ip: val.ip
+                        }
+                    });
+                    obj[val.ip] = count;
+                    val = { ...val, ipCount: count };
+                    new_rows.push(val);
+                } else {
+                    val = { ...val, ipCount: obj[Object.keys(obj)[index]] };
+                    new_rows.push(val);
+                }
+            }
+            result = { ...result, rows: new_rows };
+            return ctx.body = {
+                status: 200,
+                data: result
             }
         } catch (err) {
             const { method, header, url } = ctx;
