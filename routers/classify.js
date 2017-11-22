@@ -8,23 +8,6 @@ const loggerError = require('./common.js').loggerError;
 const definePaging = require('./common.js').definePaging;
 const removeFile = require('./common.js').removeFile;
 module.exports = (db) => {
-    router.get('/:currentPage', async(ctx) => {
-        let currentPage = ctx.params.currentPage;
-        let paging = definePaging(currentPage);
-        try {
-            let result = await db.Classify.findAndCountAll({
-                raw: true,
-                ...paging
-            });
-            return ctx.body = {
-                status: 200,
-                data: result
-            }
-        } catch (err) {
-            const { method, header, url } = ctx;
-            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
-        }
-    });
     router.get('/getByName', async(ctx) => {
         let { name } = ctx.query;
         try {
@@ -48,6 +31,23 @@ module.exports = (db) => {
         try {
             let result = await db.Classify.findById(id, {
                 raw: true
+            });
+            return ctx.body = {
+                status: 200,
+                data: result
+            }
+        } catch (err) {
+            const { method, header, url } = ctx;
+            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
+        }
+    });
+    router.get('/:currentPage', async(ctx) => {
+        let currentPage = ctx.params.currentPage;
+        let paging = definePaging(currentPage);
+        try {
+            let result = await db.Classify.findAndCountAll({
+                raw: true,
+                ...paging
             });
             return ctx.body = {
                 status: 200,
