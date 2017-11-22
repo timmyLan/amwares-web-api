@@ -233,18 +233,20 @@ module.exports = (db) => {
                 }
             }
         }
+        let sequelize = db.sequelize;
         let result = await db.Visitor.findAndCountAll({
             where: query,
+            order: [
+                [sequelize.fn('max', sequelize.col('updatedAt')), 'DESC']
+            ],
             group: 'ip',
             attributes: {
                 include: [
-                    [db.sequelize.fn('COUNT', db.sequelize.col('ip')), 'ipCount']
+                    [sequelize.fn('max', sequelize.col('updatedAt')), 'updated'],
+                    [sequelize.fn('COUNT', sequelize.col('ip')), 'ipCount']
                 ]
             },
             raw: true,
-            order: [
-                [db.sequelize.fn('COUNT', db.sequelize.col('ip')), 'DESC'],
-            ],
             ...paging
         });
         let count = result.count.length;

@@ -1491,17 +1491,31 @@
 {
     "status": 200,
     "data": {
-        "count": 1,
+        "count": 2,
         "rows": [
             {
-                "id": 1,
-                "ip": "123.123.123.123",
-                "province": "广东",
-                "city": "广州",
-                "device": "iphone6",
+                "id": 8,
+                "ip": "678",
+                "province": "hunan",
+                "city": "changsha",
+                "device": "iphone",
+                "type": 1,
+                "createdAt": "2017-11-22T03:35:30.000Z",
+                "updatedAt": "2017-11-22T03:35:30.000Z",
+                "updated": "2017-11-22T03:35:30.000Z",
+                "ipCount": 1
+            },
+            {
+                "id": 2,
+                "ip": "345",
+                "province": "guangdong",
+                "city": "guangzhou",
+                "device": "iphone",
                 "type": 2,
-                "createdAt": "2017-11-09T08:18:48.000Z",
-                "updatedAt": "2017-11-09T08:18:48.000Z"
+                "createdAt": "2017-11-21T03:47:54.000Z",
+                "updatedAt": "2017-11-21T03:47:54.000Z",
+                "updated": "2017-11-21T06:29:59.000Z",
+                "ipCount": 6
             }
         ]
     }
@@ -1509,9 +1523,11 @@
 ```
 
 ##### 返回参数说明
-| 参数名 |             说明            |
-|--------|-----------------------------|
-| type   | 1代表pc,2代表手机,3代表平板 |
+| 参数名  |             说明            |
+|---------|-----------------------------|
+| type    | 1代表pc,2代表手机,3代表平板 |
+| updated | ip访问最新时间              |
+| ipCount | ip访问总次数                |
 
 ---
 
