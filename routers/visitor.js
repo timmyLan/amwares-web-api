@@ -151,41 +151,110 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
         }
     });
-    router.get('/', async(ctx) => {
-        try {
-            let currentPage = ctx.params.currentPage;
-            let paging = definePaging(currentPage);
-            let result = await db.Visitor.findAndCountAll({
-                raw: true,
-                ...paging
-            });
-            let { rows } = result;
-            let obj = {};
-            let new_rows = [];
-            for (let val of rows) {
-                let index = Object.keys(obj).indexOf(val.ip);
-                if (index < 0) {
-                    let count = await db.Visitor.count({
-                        where: {
-                            ip: val.ip
-                        }
-                    });
-                    obj[val.ip] = count;
-                    val = { ...val, ipCount: count };
-                    new_rows.push(val);
-                } else {
-                    val = { ...val, ipCount: obj[Object.keys(obj)[index]] };
-                    new_rows.push(val);
+    // router.get('/', async(ctx) => {
+    //     try {
+    //         let currentPage = ctx.params.currentPage;
+    //         let paging = definePaging(currentPage);
+    //         let result = await db.Visitor.findAndCountAll({
+    //             raw: true,
+    //             ...paging
+    //         });
+    //         let { rows } = result;
+    //         let obj = {};
+    //         let new_rows = [];
+    //         for (let val of rows) {
+    //             let index = Object.keys(obj).indexOf(val.ip);
+    //             if (index < 0) {
+    //                 let count = await db.Visitor.count({
+    //                     where: {
+    //                         ip: val.ip
+    //                     }
+    //                 });
+    //                 obj[val.ip] = count;
+    //                 val = { ...val, ipCount: count };
+    //                 new_rows.push(val);
+    //             } else {
+    //                 val = { ...val, ipCount: obj[Object.keys(obj)[index]] };
+    //                 new_rows.push(val);
+    //             }
+    //         }
+    //         result = { ...result, rows: new_rows };
+    //         return ctx.body = {
+    //             status: 200,
+    //             data: result
+    //         }
+    //     } catch (err) {
+    //         const { method, header, url } = ctx;
+    //         loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
+    //     }
+    // });
+    router.get('/:currentPage', async(ctx) => {
+        let { ip, city, floor, cap } = ctx.query;
+        let currentPage = ctx.params.currentPage;
+        let paging = definePaging(currentPage);
+        let query = {};
+        if (ip) {
+            query = {
+                ...query,
+                ip: {
+                    $like: `%${ip}%`
                 }
             }
-            result = { ...result, rows: new_rows };
-            return ctx.body = {
-                status: 200,
-                data: result
+        }
+        if (city) {
+            query = {
+                ...query,
+                city: {
+                    $like: `%${city}%`
+                }
             }
-        } catch (err) {
-            const { method, header, url } = ctx;
-            loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`)
+        }
+        if ((!floor && cap) || (!cap && floor)) {
+            return ctx.body = {
+                status: 400,
+                data: '缺少开始时间或结束时间'
+            }
+        }
+        if (floor && cap) {
+            cap = moment(cap).add(1, 'days');
+            let capFormat = cap.format();
+            floor = moment(floor);
+            let floorFormat = floor.format();
+            if (floorFormat > capFormat) {
+                return ctx.body = {
+                    status: 400,
+                    data: '开始时间不得超过结束时间'
+                }
+            }
+            query = {
+                ...query,
+                updatedAt: {
+                    '$between': [floorFormat, capFormat]
+                }
+            }
+        }
+        let result = await db.Visitor.findAndCountAll({
+            where: query,
+            group: 'ip',
+            attributes: {
+                include: [
+                    [db.sequelize.fn('COUNT', db.sequelize.col('ip')), 'ipCount']
+                ]
+            },
+            raw: true,
+            order: [
+                [db.sequelize.fn('COUNT', db.sequelize.col('ip')), 'DESC'],
+            ],
+            ...paging
+        });
+        let count = result.count.length;
+        result = {
+            ...result,
+            count: count
+        }
+        ctx.body = {
+            status: 200,
+            data: result
         }
     });
     return router;

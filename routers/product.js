@@ -8,14 +8,25 @@ const loggerError = require('./common.js').loggerError;
 const definePaging = require('./common.js').definePaging;
 const removeFile = require('./common.js').removeFile;
 module.exports = (db) => {
+    const Op = db.Sequelize.Op;
     router.get('/:ClassifyId/:currentPage', async(ctx) => {
         let ClassifyId = ctx.params.ClassifyId;
         let currentPage = ctx.params.currentPage;
         let paging = definePaging(currentPage);
+        let { name } = ctx.query;
         try {
+            let query = {};
+            if (name) {
+                query = {
+                    name: {
+                        $like: `%${name}%`
+                    }
+                }
+            }
             let result = await db.Product.findAndCountAll({
                 raw: true,
                 where: {
+                    ...query,
                     ClassifyId: ClassifyId
                 },
                 ...paging
@@ -92,7 +103,7 @@ module.exports = (db) => {
                 }
             } else {
                 await db.Product.create(body, {
-                    fields: ['name']
+                    fields: ['name','ClassifyId']
                 });
                 return ctx.body = {
                     status: 200,

@@ -44,8 +44,18 @@ module.exports = (db) => {
     router.get('/:currentPage', async(ctx) => {
         let currentPage = ctx.params.currentPage;
         let paging = definePaging(currentPage);
+        let { name } = ctx.query;
         try {
+            let query = {};
+            if (name) {
+                query = {
+                    name: {
+                        $like: `%${name}%`
+                    }
+                }
+            }
             let result = await db.Classify.findAndCountAll({
+                where: query,
                 raw: true,
                 ...paging
             });
