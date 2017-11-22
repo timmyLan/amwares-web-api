@@ -38,10 +38,10 @@ const fileOperation = async(files, folder) => {
         for (let key in files) {
             let imgInfo = {};
             const file = files[key][0],
-                originalname = file.originalname,
+                filename = file.filename,
                 fieldname = file.fieldname,
                 tmp_path = file.path,
-                target_path = path.join(__dirname, `../assets/images/${folder}/`, originalname),
+                target_path = path.join(__dirname, `../assets/images/${folder}/`, filename),
                 src = fs.createReadStream(tmp_path),
                 dest = fs.createWriteStream(target_path);
             await src.pipe(dest);
@@ -50,7 +50,7 @@ const fileOperation = async(files, folder) => {
                     throw `error with unlink imageFile:${err}`;
                 }
             });
-            imgInfo[`${fieldname}`] = `/images/${folder}/${originalname}`;
+            imgInfo[`${fieldname}`] = `/images/${folder}/${filename}`;
             info = {
                 ...info,
                 ...imgInfo
