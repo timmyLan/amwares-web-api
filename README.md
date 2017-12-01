@@ -838,16 +838,16 @@
 #### 获取产品分类
 
 ##### 请求URL:
-* ```/classify/:currentPage```
+* ```/classify```
 
 ##### 请求方法:
 * GET
 
 ##### 参数:
-|   参数名    | 必填 |  类型  |     说明     |
-|-------------|------|--------|--------------|
-| currentPage | y    | int    | 当前页码     |
-| name        | n    | string | 产品分类名称 |
+|   参数名    | 必填 |  类型  |             说明            |
+|-------------|------|--------|-----------------------------|
+| currentPage | n    | int    | 当前页码,不填则显示全部数据 |
+| name        | n    | string | 产品分类名称                |
 
 ##### 返回示例:
 ```json
@@ -1023,17 +1023,17 @@
 #### 获取产品
 
 ##### 请求URL:
-* ```/product/:ClassifyId/:currentPage```
+* ```/product/:ClassifyId```
 
 ##### 请求方法:
 * GET
 
 ##### 参数:
-|   参数名    | 必填 |  类型  |    说明    |
-|-------------|------|--------|------------|
-| ClassifyId  | y    | int    | 所属分类id |
-| currentPage | y    | int    | 当前页码   |
-| name        | n    | string | 产品名称   |
+|   参数名    | 必填 |  类型  |             说明            |
+|-------------|------|--------|-----------------------------|
+| ClassifyId  | y    | int    | 所属分类id                  |
+| currentPage | y    | int    | 当前页码,不填则显示全部数据 |
+| name        | n    | string | 产品名称                    |
 
 ##### 返回示例:
 ```json
@@ -1680,17 +1680,21 @@
 | content | y    | string | 搜索匹配内容                                                       |
 
 ##### 返回示例:
+```
+    /search?content=test
+```
+
 ```json
 {
     "status": 200,
     "data": [
         {
             "id": 1,
-            "name": "classify",
+            "name": "i am classify",
             "classifyUrl": null,
-            "description": "i am classify",
-            "createdAt": "2017-11-20T04:06:45.000Z",
-            "updatedAt": "2017-11-20T04:06:45.000Z",
+            "description": "just a classify test",
+            "createdAt": "2017-12-01T03:57:21.000Z",
+            "updatedAt": "2017-12-01T03:57:21.000Z",
             "model": "classify"
         },
         {
@@ -1700,6 +1704,14 @@
             "createdAt": "2017-11-20T04:20:16.000Z",
             "updatedAt": "2017-11-20T04:20:16.000Z",
             "ClassifyId": 1,
+            "Contents.id": 8,
+            "Contents.title": "i am content",
+            "Contents.contentUrl": null,
+            "Contents.description": "just like a test",
+            "Contents.sort": 4,
+            "Contents.createdAt": "2017-12-01T03:56:27.000Z",
+            "Contents.updatedAt": "2017-12-01T03:56:27.000Z",
+            "Contents.ProductId": 1,
             "model": "product"
         }
     ]

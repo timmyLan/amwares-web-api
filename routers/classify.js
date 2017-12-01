@@ -41,10 +41,12 @@ module.exports = (db) => {
             loggerError(`use method:${ctx.method} ${header.host}${url} error:${err}`);
         }
     });
-    router.get('/:currentPage', async(ctx) => {
-        let currentPage = ctx.params.currentPage;
-        let paging = definePaging(currentPage);
-        let { name } = ctx.query;
+    router.get('/', async(ctx) => {
+        let { name, currentPage } = ctx.query;
+        let paging = {};
+        if (currentPage) {
+            paging = definePaging(currentPage);
+        }
         try {
             let query = {};
             if (name) {

@@ -1,7 +1,9 @@
 const router = require('koa-router')();
+const loggerError = require('./common.js').loggerError;
 module.exports = (db) => {
     router.get('/', async(ctx) => {
         try {
+            let Content = db.Content;
             let { type, content } = ctx.query;
             if (!content) {
                 return ctx.body = {
@@ -19,9 +21,15 @@ module.exports = (db) => {
                 } else if (type === "1") {
                     let result = await db.Classify.findAll({
                         where: {
-                            name: {
-                                $like: `%${content}%`
-                            }
+                            $or: [{
+                                name: {
+                                    $like: `%${content}%`
+                                }
+                            }, {
+                                description: {
+                                    $like: `%${content}%`
+                                }
+                            }]
                         },
                         raw: true
                     });
@@ -39,10 +47,21 @@ module.exports = (db) => {
                     }
                 } else if (type === "2") {
                     let result = await db.Product.findAll({
+                        include: [Content],
                         where: {
-                            name: {
-                                $like: `%${content}%`
-                            }
+                            $or: [{
+                                name: {
+                                    $like: `%${content}%`
+                                }
+                            }, {
+                                '$Contents.title$': {
+                                    $like: `%${content}%`
+                                }
+                            }, {
+                                '$Contents.description$': {
+                                    $like: `%${content}%`
+                                }
+                            }]
                         },
                         raw: true
                     });
@@ -84,9 +103,15 @@ module.exports = (db) => {
                 let data = [];
                 let classify_result = await db.Classify.findAll({
                     where: {
-                        name: {
-                            $like: `%${content}%`
-                        }
+                        $or: [{
+                            name: {
+                                $like: `%${content}%`
+                            }
+                        }, {
+                            description: {
+                                $like: `%${content}%`
+                            }
+                        }]
                     },
                     raw: true
                 });
@@ -98,10 +123,21 @@ module.exports = (db) => {
                     data.push(val);
                 }
                 let product_result = await db.Product.findAll({
+                    include: [Content],
                     where: {
-                        name: {
-                            $like: `%${content}%`
-                        }
+                        $or: [{
+                            name: {
+                                $like: `%${content}%`
+                            }
+                        }, {
+                            '$Contents.title$': {
+                                $like: `%${content}%`
+                            }
+                        }, {
+                            '$Contents.description$': {
+                                $like: `%${content}%`
+                            }
+                        }]
                     },
                     raw: true
                 });

@@ -66,7 +66,7 @@ module.exports = (db) => {
                 }
             } else {
                 await db.Content.create(body, {
-                    fields: ['title', 'description']
+                    fields: ['title', 'description', 'sort', 'ProductId']
                 });
                 return ctx.body = {
                     status: 200,
@@ -97,7 +97,7 @@ module.exports = (db) => {
                         id: id
                     }
                 });
-                if (contentUrl&& contentUrl!==fileInfo.contentUrl) {
+                if (contentUrl && contentUrl !== fileInfo.contentUrl) {
                     let target = await db.Content.findAndCountAll({
                         where: {
                             contentUrl: contentUrl
