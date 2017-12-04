@@ -7,7 +7,7 @@ const logger = require('koa-logger');
 const bodyParser = require('koa-bodyparser');
 const session = require("koa-session2");
 const router = require('./routers');
-// const login_mid = require('./mids/login_mid.js');
+const login_mid = require('./mids/login_mid.js');
 // 初始化应用服务
 const app = new Koa();
 const ENV = process.env.NODE_ENV;
@@ -38,7 +38,7 @@ app.use(session({
 }));
 app.use(bodyParser());
 app.use(json());
-// app.use(login_mid());
+app.use(login_mid());
 app.use(router.routes());
 db.sequelize.sync(
     // {
