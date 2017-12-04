@@ -16,6 +16,7 @@ app.use(logger());
 app.use(cors({
     origin: function (ctx) {
     	if(ENV==='development'){
+            console.log('ctx.accept.headers.origin',ctx.accept.headers.origin);
     		return 'http://localhost:3002';
     	}else if(ENV==='production'){
     		return 'ly.admin.com';
