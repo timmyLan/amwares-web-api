@@ -1289,7 +1289,7 @@
 ##### 参数:
 |   参数名   | 必填 |  类型  |    说明    |
 |------------|------|--------|------------|
-| id         | y    | int    | 产品id     |
+| id         | y    | int    | 内容块id     |
 | title       | y    | string | 内容块标题     |
 | description | n    | string | 描述         |
 | contentUrl  | n    | file   | 内容块图文件 |

@@ -114,7 +114,7 @@ module.exports = (db) => {
                     data: '修改内容块成功'
                 }
             } else {
-                await db.Product.update(body, {
+                await db.Content.update(body, {
                     fields: ['title', 'description'],
                     where: {
                         id: id
