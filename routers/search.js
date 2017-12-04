@@ -62,9 +62,9 @@ module.exports = (db) => {
                                     $like: `%${content}%`
                                 }
                             }]
-                        },
-                        raw: true
+                        }
                     });
+                    result = JSON.parse(JSON.stringify(result));
                     let data = [];
                     for (let val of result) {
                         val = {
@@ -138,9 +138,9 @@ module.exports = (db) => {
                                 $like: `%${content}%`
                             }
                         }]
-                    },
-                    raw: true
+                    }
                 });
+                product_result = JSON.parse(JSON.stringify(product_result));
                 for (let val of product_result) {
                     val = {
                         ...val,

@@ -1704,14 +1704,18 @@
             "createdAt": "2017-11-20T04:20:16.000Z",
             "updatedAt": "2017-11-20T04:20:16.000Z",
             "ClassifyId": 1,
-            "Contents.id": 8,
-            "Contents.title": "i am content",
-            "Contents.contentUrl": null,
-            "Contents.description": "just like a test",
-            "Contents.sort": 4,
-            "Contents.createdAt": "2017-12-01T03:56:27.000Z",
-            "Contents.updatedAt": "2017-12-01T03:56:27.000Z",
-            "Contents.ProductId": 1,
+            "Contents": [
+                {
+                    "id": 8,
+                    "title": "i am content",
+                    "contentUrl": null,
+                    "description": "just like a test",
+                    "sort": 4,
+                    "createdAt": "2017-12-01T03:56:27.000Z",
+                    "updatedAt": "2017-12-01T03:56:27.000Z",
+                    "ProductId": 1
+                }
+            ],
             "model": "product"
         }
     ]
