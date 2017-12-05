@@ -15,17 +15,21 @@ const ENV = process.env.NODE_ENV;
 app.use(logger());
 app.use(cors({
     origin: function(ctx) {
-        let whiteReg = /^https?:\/\/localhost:\d+/;
+        let requestOrigin = ctx.accept.headers.origin;
         if (ENV === 'development') {
-            let requestOrigin = ctx.accept.headers.origin;
+            let whiteReg = /^https?:\/\/localhost:\d+/;
             if (whiteReg.test(requestOrigin)) {
                 return requestOrigin;
             } else {
                 return false;
             }
-
         } else if (ENV === 'production') {
-            return 'ly.admin.com';
+            let whiteArray = ['http://ly.admin.com', 'http://ly.website.com'];
+            if (whiteArray.indexOf(requestOrigin) < 0) {
+                return false;
+            } else {
+                return requestOrigin;
+            }
         } else {
             return false;
         }
