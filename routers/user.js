@@ -128,6 +128,12 @@ module.exports = (db) => {
         try {
             const id = ctx.params.id;
             const { password } = ctx.request.body;
+            if(!password){
+                return ctx.body = {
+                    status: 400,
+                    data: '密码必须填写'
+                };
+            }
             let changePs = changePassword(password);
             let user = await db.User.update({
                 password: changePs
