@@ -12,6 +12,8 @@
     npm start
     #填充数据
     npm run development-seeds
+    #pm2启动
+    pm2 start --name amwares-web-api-production  npm -- run production --
 ```
 
 ## 目录
