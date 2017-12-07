@@ -24,7 +24,12 @@ app.use(cors({
                 return false;
             }
         } else if (ENV === 'production') {
-            let whiteArray = ['http://ly.admin.com', 'https://ly.admin.com', 'http://ly.website.com', 'https://ly.website.com'];
+            let whiteArray = [
+                'http://ly.admin.com', 'https://ly.admin.com',
+                'http://ly.website.com', 'https://ly.website.com',
+                'http://ly.amwares.com', 'https://ly.amwares.com',
+                'http://admin.amwares.com', 'http://admin.amwares.com'
+            ];
             if (whiteArray.indexOf(requestOrigin) < 0) {
                 return false;
             } else {
